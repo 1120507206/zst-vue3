@@ -1,0 +1,134 @@
+@mixin resetUL() {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+// 文本溢出
+// $width: 容器宽度
+@mixin truncate($width: 100%) {
+  width: $width;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: normal;
+  white-space: nowrap;
+}
+
+// 多行文本溢出
+// $row: 行数
+@mixin line-clamp($row: 2) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $row;
+
+  /*! autoprefixer: off */
+  -webkit-box-orient: vertical;
+
+  /* autoprefixer: on */
+}
+
+// 两端对齐
+@mixin text-justify {
+  text-align: justify;
+  text-align-last: justify;
+}
+
+/**
+ * 小三角形
+ * @param {color} color 颜色
+ * @param {size} size 尺寸
+ * @param {string} direction 方向
+ */
+@mixin triangle($color: #000, $size: 10px, $direction: "down") {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  font-size: 0;
+  border-width: $size / 2;
+
+  @if ($direction == "up") {
+    border-color: transparent transparent $color;
+    border-style: dashed dashed solid;
+  } @else if ($direction == "right") {
+    border-color: transparent transparent transparent $color;
+    border-style: dashed dashed dashed solid;
+  } @else if ($direction == "down") {
+    border-color: $color transparent transparent;
+    border-style: solid dashed dashed;
+  } @else if ($direction == "left") {
+    border-color: transparent $color transparent transparent;
+    border-style: dashed solid dashed dashed;
+  } @else if ($direction == "up-left") {
+    border-color: $color transparent transparent $color;
+    border-style: solid dashed dashed solid;
+  } @else if ($direction == "up-right") {
+    border-color: $color $color transparent transparent;
+    border-style: solid solid dashed dashed;
+  } @else if ($direction == "down-left") {
+    border-color: transparent transparent $color $color;
+    border-style: dashed dashed solid solid;
+  } @else {
+    // down-right
+    border-color: transparent $color $color transparent;
+    border-style: dashed solid solid dashed;
+  }
+}
+
+@mixin marquee($padding: 10px, $time: 20s) {
+  @keyframes marquee {
+    0% {
+      transform: translate(100%, 0);
+    }
+    100% {
+      transform: translate(-100%, 0);
+    }
+  }
+
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0 $padding;
+
+  & > div {
+    &:hover {
+      animation-play-state: paused;
+    }
+
+    animation: marquee $time linear infinite;
+  }
+}
+
+@mixin spin($duration: 800ms) {
+  @keyframes spin {
+    0% {
+      transform: rotate(360deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  animation: spin $duration infinite linear;
+}
+
+// 自定义滚动条，未测试，未用过，纯搬运
+@mixin scrollbar($width: 10px, $barBg: #f8f8f8, $trackBg: #f8f8f8, $thumbBg: #e2e2e2) {
+  // 定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸
+  ::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+    background-color: $barBg;
+  }
+
+  // 定义滚动条轨道 内阴影+圆角
+  ::-webkit-scrollbar-track {
+    background-color: $trackBg;
+  }
+
+  // 定义滑块 内阴影+圆角
+  ::-webkit-scrollbar-thumb {
+    background-color: $thumbBg;
+    border-radius: 5px;
+  }
+}
