@@ -208,7 +208,7 @@ export default defineComponent({
   flex: 1;
   overflow: auto;
   background-color: variables.$mainBgColor;
-
+  min-width: 1200px;
   &.fixed-header {
     display: flex;
     flex-direction: column;

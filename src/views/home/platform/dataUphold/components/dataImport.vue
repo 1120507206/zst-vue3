@@ -10,7 +10,12 @@
         <div class="tip">支持.xlsx文件上传</div>
       </el-col>
       <el-col :span="6">
-        <el-form :model="formData" :rules="rules" label-width="120px">
+        <el-form
+          ref="form"
+          :model="formData"
+          :rules="rules"
+          label-width="120px"
+        >
           <el-form-item label="选择报表" prop="tableName">
             <el-select
               v-model="formData.tableName"
@@ -44,56 +49,70 @@
           class="upload-demo"
           action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
           multiple
+          :disabled="disabledUpload"
           :on-preview="handlePreview"
           :on-remove="handleRemove"
           :before-remove="beforeRemove"
+          :before-upload="beforeUpload"
           :limit="3"
           :on-exceed="handleExceed"
         >
-          <el-button type="primary"> 上传文件</el-button>
+          <el-button type="primary" @click="handleSubmit"> 上传文件</el-button>
         </el-upload>
       </el-col>
     </el-row>
+      <el-divider />
     <el-row>
       <el-col :span="24">
         <div>我的上传记录</div>
-        <el-table :data="tableData"   style="width: 100%">
-        <template #empty>
-        <div>暂未选择导入</div>
-        </template>
-          <el-table-column prop="index" label="序号" width="80" />
-          <el-table-column prop="tableName" label="数据表"  />
+        <el-table :data="tableData" style="width: 100%">
+          <template #empty>
+            <div>暂未选择导入</div>
+          </template>
+          <el-table-column  type="index" label="序号" width="80" />
+          <el-table-column prop="tableName" label="数据表" />
           <el-table-column prop="fileName" label="文件名" width="200" />
-          <el-table-column prop="count" label="数据量"  />
+          <el-table-column prop="count" label="数据量" />
           <el-table-column prop="reason" label="导入原因" width="200" />
-          <el-table-column prop="importTime" label="上传时间" width="180" />
-          <el-table-column prop="gmtUpdated" label="更新时间" width="180" />
+          <el-table-column
+            prop="importTime"
+            :formatter="defaultTimeFormat"
+            label="上传时间"
+            width="180"
+          />
+          <el-table-column prop="gmtUpdated"  :formatter="defaultTimeFormat" label="更新时间" width="180" />
           <el-table-column prop="status" label="状态" width="120" />
-         <el-table-column label="操作">
-          <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-          >Edit</el-button
-        >
-        <el-button
-          size="small"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)"
-          >Delete</el-button
-        >
-      </template>
-         </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button
+                size="small"
+                @click="handleEdit(scope.$index, scope.row)"
+                >Edit</el-button
+              >
+              <el-button
+                size="small"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+                >Delete</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
   </div>
 </template>
 
-<script lang="ts">
+<script>
+  // import { defaultTimeFormat } from "@/utils/util";
+  import dayjs from "dayjs";
+
   export default {
     data() {
       return {
         modelUrl: "", //地址
         isAutoUpload: false, // 自动导入开关的值
+        disabledUpload: true, // 禁用上传
         formData: {
           // 表单数据
           tableName: undefined,
@@ -113,7 +132,28 @@
             { required: true, message: "请输入导入原因", trigger: "blur" },
           ],
         },
-         tableData: [], // 表格数据
+        tableData: [
+          {
+            columnValue: "",
+            count: 12,
+            fileName:
+              "ctp_manual_map_district_zoucheng_zoucheng_1663314080480.xlsx",
+            gmtCreate: 1663314080000,
+            gmtUpdated: 1663314081000,
+            id: 287,
+            importTime: 1663314080000,
+            isDeleted: false,
+            moduleId: "",
+            reason: "测试",
+            showImport: false,
+            status: 1,
+            table: 0,
+            tableName: "行政区映射表",
+            userId: 1034,
+            userName: "zoucheng",
+            userNickname: "邹铖",
+          },
+        ], // 表格数据
         tableNameOptions: [
           // 数据表下拉框选项
           "行政区映射表",
@@ -127,7 +167,20 @@
     },
     created() {},
     mounted() {},
-    methods: {},
+    methods: {
+      defaultTimeFormat(row, col, callValue) {
+        return dayjs(callValue).format("YYYY-MM-DD HH:mm:ss");
+      },
+      // 表单提交
+      handleSubmit() {
+        this.disabledUpload = true;
+        this.$refs["form"].validate((valid) => {
+          if (valid) {
+            this.disabledUpload = false;
+          }
+        });
+      },
+    },
   };
 </script>
 

@@ -7,6 +7,7 @@ const Org = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@
 const User = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/user/index.vue');
 const Menu = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/menu/index.vue');
 const File = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/file/index.vue');
+const UserAuth = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/userauth/index.vue');
 const Auth = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/auth/index.vue');
 const Msg = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/msg/index.vue');
 const VisitLog = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/visit-log/index.vue');
@@ -46,6 +47,12 @@ const routes: RoutesDataItem[] = [
         title: '文件处理',
         path: '/system/file',
         component: File,
+      },
+      {
+        icon: 'control',
+        title: '用户权限管理',
+        path: '/system/userauth',
+        component: UserAuth,
       },
       {
         icon: 'control',
