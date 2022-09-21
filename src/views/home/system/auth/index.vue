@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="20">
         <div>授权：</div>
-        <el-tabs v-model="activeName" class="tabs">
+        <el-tabs v-show="userId" v-model="activeName" class="tabs">
           <el-tab-pane label="广州楼盘接口" name="first">
             <el-button-group>
               <el-button
@@ -26,7 +26,7 @@
           </el-tab-pane>
         </el-tabs>
 
-        <el-empty v-if="isEmpty" description="请选择用户" />
+        <el-empty v-if="!userId" description="请选择用户" />
       </el-col>
     </el-row>
   </main>
@@ -37,29 +37,24 @@
   import Sidebar from "./components/sidebar.vue";
   import Validperiod from "./components/validperiod.vue";
   import Editperiod from "./components/editperiod.vue";
+  import {getByName,getUserByAccountOrOrgId } from "./service"
+
+
+
   //左侧用户列表
   const treeData = ref([
-    {
-      account: "用户1",
-      id:'1',
-    },
-    {
-      account: "用户2",
-      id:'2',
-    },
+
   ]);
   //左侧查询
-  const sideSubmit = (value: any) => {
-    treeData.value = [
-      {
-        account: "用户3",
-         id:'3',
-      },
-      {
-        account: "用户4",
-        id:'4',
-      },
-    ];
+  const sideSubmit = async(value: any) => {
+  const params = {
+    account:value.account,
+    orgId:value.orgId,
+  }
+   const { data: { success, message, obj } }  = await getUserByAccountOrOrgId(params)
+  console.log('obj :>> ', obj);
+   treeData.value = obj?obj:[];
+
   };
   //左侧的id
    let userId = ref<string>('')
@@ -75,7 +70,7 @@
 
   //tab切换
   const activeName = ref("first");
-  let activeTab = ref(1);
+  let activeTab = ref(0);
   const currentTabComponent = computed(() => {
     return activeTab.value == 0 ? Validperiod : Editperiod;
   });

@@ -1,92 +1,92 @@
 import { AxiosPromise } from 'axios';
 import apiBaseUrl from '@/config/apiBaseUrl';
 import request from '@/utils/request';
-import { ReqParams, ResResult } from './data.d';
+// import { ReqParams, ResResult } from './data.d';
+const mockUrl = 'http://127.0.0.1:4523/m1/1639888-0-default'
+
+
+
+
+/* 获取单个有效期 */
+export const getUserIdentity = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user_identity/get',
+  method: 'GET',
+   params
+});
+/* 有效期列表 */
+export const getValidDateList = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user_identity/validDateList',
+  method: 'GET',
+   params
+});
+/* 修改或者添加数据 */
+export const saveUserIdentity = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user_identity/save',
+  method: 'POST',
+  data: params,
+});
+/* 删除标签数据 */
+
+export const deleteUserIdentity = (
+  id:string
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: 'user_identity/delete',
+  method: 'DELETE',
+   params: {
+    id,
+  },
+});
+/* 查询标签分页数据 */
+export const getSearchLabelPage = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user_identity/searchLabelPage',
+  method: 'POST',
+  data: params,
+});
+/* 根据机构id或账号获取用户列表 */
+export const getUserByAccountOrOrgId = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user/findUserByAccountOrOrgId',
+  method: 'GET',
+   params,
+});
+/* 通过机构名称查询机构 */
+export const getByName = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: 'org/getByName',
+  method: 'GET',
+   params,
+});
 
 /* 取消角色用户关联 */
-export const cancelUserAuth = (
-  params: ReqParams.CancelUserAuth,
-): AxiosPromise<ResResult.CancelUserAuth> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/cancelUserAuth',
-  method: 'POST',
-  data: params,
-});
-
-/* 查询当前角色关联的菜单 */
-export const findMenuAuthTree = (id: string): AxiosPromise<ResResult.FindMenuAuthTree> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/findMenuAuthTree',
-  method: 'POST',
-  params: {
-    roleId: id,
-  },
-});
-
-/* 查询当前角色关联的用户 */
-export const findRoleAndUser = (id: string): AxiosPromise<ResResult.FindRoleAndUser> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/findRoleAndUser',
-  method: 'POST',
-  params: {
-    roleId: id,
-  },
-});
-
-/* 查询当前角色未关联的用户 */
-export const findRoleNotRelateUser = (
-  params: ReqParams.FindRoleNotRelateUser,
-): AxiosPromise<ResResult.FindRoleNotRelateUser> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/findRoleNotRelateUser',
-  method: 'POST',
-  data: params,
-});
-
-/* 获取单条角色数据 */
-export const get = (id: string): AxiosPromise<ResResult.Get> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/get',
-  method: 'GET',
-  params: {
-    orgId: id,
-  },
-});
-
-/* 角色关联用户 */
-export const relateUserAuth = (
-  params: ReqParams.RelateUserAuth,
-): AxiosPromise<ResResult.RelateUserAuth> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/relateUserAuth',
-  method: 'POST',
-  data: params,
-});
-
-/* 保存用户信息 */
-export const save = (params: ReqParams.Save): AxiosPromise<ResResult.Save> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/save',
-  method: 'POST',
-  data: params,
-});
-
-/* 关联菜单角色 */
-export const saveMenuRole = (
-  params: ReqParams.SaveMenuRole,
-): AxiosPromise<ResResult.SaveMenuRole> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/saveMenuRole',
-  method: 'POST',
-  data: params,
-});
-
-/* 查询数据分页 */
-export const searchRolePage = (
-  params: ReqParams.SearchRolePage,
-): AxiosPromise<ResResult.SearchRolePage> => request({
-  baseURL: apiBaseUrl.get('sys'),
-  url: '/role/searchRolePage',
-  method: 'POST',
-  data: params,
-});
+// export const cancelUserAuth = (
+//   params: ReqParams.CancelUserAuth,
+// ): AxiosPromise<ResResult.CancelUserAuth> => request({
+//   baseURL: apiBaseUrl.get('sys'),
+//   url: '/role/cancelUserAuth',
+//   method: 'POST',
+//   data: params,
+// });

@@ -162,13 +162,13 @@ request.interceptors.response.use(
     }
     const { status }: ResponseData<unknown> = data;
     // 自定义状态码验证
-    if (status !== 200) {
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject({
-        response,
-        message: 'CustomError', // 别乱改，用于标记自定义错误用的
-      });
-    }
+    // if (status !== 200) {
+    //   // eslint-disable-next-line prefer-promise-reject-errors
+    //   return Promise.reject({
+    //     response,
+    //     message: 'CustomError', // 别乱改，用于标记自定义错误用的
+    //   });
+    // }
 
     // // 重置刷新token
     // if (token) {

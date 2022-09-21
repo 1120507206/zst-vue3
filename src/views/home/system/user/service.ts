@@ -51,6 +51,15 @@ export const resetPassword = (id: string): AxiosPromise<ResResult.ResetPassword>
   },
 });
 
+/* 查询数据分页1 */
+export const searchUserOrgPage = (
+  params: ReqParams.SearchUserPage,
+): AxiosPromise<ResResult.SearchUserPage> => request({
+  baseURL: apiBaseUrl.get('sys'),
+  url: '/user/searchUserOrgPage',
+  method: 'POST',
+  data: params,
+});
 /* 查询数据分页 */
 export const searchUserPage = (
   params: ReqParams.SearchUserPage,

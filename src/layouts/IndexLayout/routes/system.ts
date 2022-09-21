@@ -13,6 +13,7 @@ const Msg = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@
 const VisitLog = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/visit-log/index.vue');
 const LoginLog = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/login-log/index.vue');
 const Center = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/center/index.vue');
+const AddressBook = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/addressbook/index.vue');
 // const Center = (): Promise<Component> => import(/* webpackChunkName: "system" */ '@/views/home/system/center/index.vue');
 
 const routes: RoutesDataItem[] = [
@@ -35,6 +36,12 @@ const routes: RoutesDataItem[] = [
         title: '用户管理',
         path: '/system/user',
         component: User,
+      },
+      {
+        icon: 'control',
+        title: '通讯录',
+        path: '/system/addressbook',
+        component: AddressBook,
       },
       {
         icon: 'control',

@@ -13,7 +13,9 @@
           start-placeholder="选择有效期开始时间"
           end-placeholder="选择有效期结束时间"
         />
-        <el-button type="primary" class="button" @click="addSave"> 确定</el-button>
+        <el-button type="primary" class="button" @click="addSave">
+          确定</el-button
+        >
       </el-col>
     </el-row>
     <el-row>
@@ -35,29 +37,13 @@
                 @click="handleEdit(scope.$index, scope.row)"
                 >编辑</el-button
               >
-
-              <el-popover
-                v-model:visible="delVisible"
-                placement="top"
-                trigger="click"
-                width="200px"
+              <el-button
+                v-if="showDel(scope.row)"
+                size="small"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+                >删除</el-button
               >
-                <p>确定删除该有效期？</p>
-                <div style="text-align: right; margin: 0">
-                  <el-button size="small" text @click="delVisible = false"
-                    >取消</el-button
-                  >
-                  <el-button
-                    size="small"
-                    type="primary"
-                    @click="handleDelete(scope.$index, scope.row)"
-                    >确定</el-button
-                  >
-                </div>
-                <template #reference>
-                  <el-button   v-if="showDel(scope.row)" size="small" type="danger">删除</el-button>
-                </template>
-              </el-popover>
             </template>
           </el-table-column>
         </el-table>
@@ -69,48 +55,43 @@
           background
           :hide-on-single-page="isShowPage"
           layout="prev, pager, next, jumper"
-          :total="5"
+          :current-page="pagination.current"
+          :page-size="pagination.pageSize"
+          :total="pagination.total"
+          @current-change="pagination.onChange"
         />
       </el-col>
     </el-row>
-      <el-dialog
-    v-model="editVisible"
-    width="25%"
-    title="编辑有效期"
-  >
-    <el-date-picker
-          v-model="editTimeList"
-          type="daterange"
-          value-format="YYYY-MM-DD"
-          @change="timeChange"
-          :disabled-date="disabledDate"
-          range-separator="-"
-          start-placeholder="选择有效期开始时间"
-          end-placeholder="选择有效期结束时间"
-        />
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="editVisible = false">取消</el-button>
-        <el-button type="primary" @click="editSave"
-
-          >确定</el-button
-        >
-      </span>
-    </template>
-  </el-dialog>
+    <el-dialog v-model="editVisible" width="25%" title="编辑有效期">
+      <el-date-picker
+        v-model="editTimeList"
+        type="daterange"
+        value-format="YYYY-MM-DD"
+        @change="timeChange"
+        :disabled-date="disabledDate"
+        range-separator="-"
+        start-placeholder="选择有效期开始时间"
+        end-placeholder="选择有效期结束时间"
+      />
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="editVisible = false">取消</el-button>
+          <el-button type="primary" @click="editSave">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { ElMessage } from "element-plus";
-import { reactive, ref, watch } from "vue";
-  const tableData = ref([
-    {
-      validDateFrom: "2024-02-01",
-      validDateEnd: "2033-02-01",
-      updateTime: "2022-08-13 12:00:00",
-    },
-  ]);
+  import { reactive, ref, watch } from "vue";
+  import { useHandleData } from "@/hooks/useHandleData";
+  import {
+    getSearchLabelPage,
+    saveUserIdentity,
+    deleteUserIdentity,
+  } from "../service";
   // 时间组件
   const timeList = ref([]);
   const oneDayMillisecond: number = 86400000; //一天的毫秒数
@@ -126,61 +107,158 @@ import { reactive, ref, watch } from "vue";
     id: { type: String, default: "" },
   });
 
-//新增-确定按钮
-const addSave = ()=>{
-if (timeList.value.length===0) {
- ElMessage.error('请先选择时间区间！')
- return
-}
-console.log('这是保存',timeList )
+  //新增-确定按钮
+  const addSave = async () => {
+    if (timeList.value.length === 0) {
+      ElMessage.error("请先选择时间区间！");
+      return;
+    }
+    const validDateFrom = timeList.value[0];
+    const validDateEnd = timeList.value[1];
+    const userId = props.id;
+    // const userId = "1"; //测试数据
+    console.log("validDateEnd :>> ", typeof validDateEnd);
+    const params = {
+      userId,
+      validDateFrom,
+      validDateEnd,
+      labelDictType: "test",
+      labelValue1: 5, //新增时，接口并发数默认为5
+      //   validDateFrom: validDateFrom,
+      // userId: userId,
+      // validDateEnd: validDateEnd
+    };
 
-}
+    const {
+      data: { success, message, obj },
+    } = await saveUserIdentity(params);
+
+    if (success) {
+      ElMessage.success("新增成功！");
+    } else {
+      ElMessage.error(message);
+    }
+    getPageData();
+    console.log("这是保存", obj);
+  };
 
   const editTimeList = ref<any>([]);
   const editVisible = ref(false);
+  //编辑的参数
+  let editParams = {
+    validDateFrom: "",
+    userId: "",
+    id: "",
+    validDateEnd: "",
+  };
   //编辑按钮
   const handleEdit = (index: any, row: any) => {
-  const { validDateFrom,validDateEnd, } = row;
-  editTimeList.value = [validDateFrom,validDateEnd]
-  editVisible.value = true
+    const { validDateFrom, validDateEnd, userId, id } = row;
+    editParams = {
+      validDateFrom,
+      validDateEnd,
+      userId,
+      id,
+    };
+    console.log("row", row);
+    console.log("editParams", editParams);
+    editTimeList.value = [validDateFrom, validDateEnd];
+    editVisible.value = true;
   };
-//编辑保存
-const editSave = ()=>{
-  editVisible.value = false
-
-}
+  //编辑保存
+  const editSave = async () => {
+    editVisible.value = false;
+    editParams.validDateFrom = editTimeList.value[0];
+    editParams.validDateEnd = editTimeList.value[1];
+    const {
+      data: { success, message, obj },
+    } = await saveUserIdentity(editParams);
+    if (success) {
+      ElMessage.success("修改成功！");
+    } else {
+      ElMessage.error(message);
+    }
+    getPageData();
+  };
 
   //是否显示编辑按钮
   const showEdit = (row: any) => {
- const { validDateEnd } = row;
+    const { validDateEnd } = row;
     const endTime = new Date(validDateEnd);
     const nowTime = new Date();
     return nowTime < endTime;
-
-
   };
-  const delVisible = ref(false);
+  // const delVisible = ref(false);
   //删除按钮
-  const handleDelete = (index: any, row: any) => {
-    delVisible.value = false;
+  const handleDelete = async (index: any, row: any) => {
+    const params = {
+      id: row.id,
+    };
+    await useHandleData(deleteUserIdentity, params.id, `删除该有效期`);
+    getPageData();
   };
   //是否显示删除按钮
   const showDel = (row: any) => {
-     const { validDateFrom,validDateEnd, } = row;
+    const { validDateFrom, validDateEnd } = row;
     const startTime = new Date(validDateFrom);
     const endTime = new Date(validDateEnd);
     const nowTime = new Date();
-      return nowTime < startTime;
+    return nowTime < startTime;
     // return( startTime <= nowTime) && ( nowTime <= endTime);
   };
 
-
   //是否屏蔽分页控件
   const isShowPage = ref(true);
+  const pagination = reactive({
+    current: 1, //
+    pageSize: 10,
+    total: 20, //
+    onChange: (page:any) => {
+    pagination.current = page
+    searchFrom.pageIndex = page
+    getPageData()
+    },
+  });
+
+  //表格数据
+  const tableData = ref([]);
+
+  //搜索条件
+  const searchFrom = reactive({
+    pageIndex: 1,
+    pageSize: 10,
+    labelDictType: "test",
+    userId: "",
+    effective: false,
+  });
+  //查询条件
+  const getPageData = async () => {
+    const params = {
+      pageIndex: searchFrom.pageIndex,
+      pageSize: searchFrom.pageSize,
+      labelDictType: searchFrom.labelDictType,
+      userId: searchFrom.userId,
+      // userId: "1", //测试数据
+      effective: searchFrom.effective,
+    };
+    const {
+      data: { success, message, obj },
+    } = await getSearchLabelPage(params);
+    if (obj.total>10) {
+      isShowPage.value = false
+    }else{
+     isShowPage.value =true
+    }
+  pagination.total = obj.total || 0;
+    tableData.value = obj.data ? obj.data : [];
+    console.log("obj5555 :>> ", obj);
+  };
   //监听函数
   watch(
     () => props.id,
     (val, old) => {
+      searchFrom.userId = val;
+      getPageData();
       console.log(" 监听id变化", val);
     }
   );

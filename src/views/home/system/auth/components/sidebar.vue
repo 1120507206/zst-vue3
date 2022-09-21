@@ -36,6 +36,10 @@
 
 <script lang="ts" setup>
   import { reactive, ref } from "vue";
+  interface SearchForm {
+  account: string,
+  orgId?: number,
+}
   interface FilterEmits {
     (e: "submit", value: object): void;
     (e: "getId", id: string): void;

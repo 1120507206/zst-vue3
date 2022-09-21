@@ -56,7 +56,7 @@ const settings: SettingsType = {
   hasBreadcrumb: false,
   hasTabNav: true,
   siteTokenKey: 'tk',
-  ajaxHeadersTokenKey: 'x-token',
+  ajaxHeadersTokenKey: 'sessionId',
   ajaxResponseNoVerifyUrl: [
     '/login', // 用户登录
   ],

@@ -80,7 +80,7 @@ export interface UserFormData {
   account: string,
   name: string,
   gender: 'M' | 'F',
-  mobile: string,
+  contactNumber: string,
   email: string,
   icon: string,
 }

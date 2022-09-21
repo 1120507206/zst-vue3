@@ -73,11 +73,14 @@ module.exports = {
       '/': {
         // target: 'http://192.168.2.216:10026',
         // target: 'http://192.168.1.52',
-        target: 'http://118.195.149.161:1622',
+        // target: 'http://118.195.149.161:1622',
+        target: 'http://192.168.3.54:1622',//开发人员服务器-何裕彤
+        // target: 'http://192.168.3.152:1622',//开发人员服务器-陈嘉坤
         ws: true,
         changeOrigin: true,
         pathRewrite: {
           '^/api': '',
+          // '^/api/sys': '',
         },
         onProxyRes(proxyRes) {
           // 解决开发环境下cookie丢失，接口在后盾那边可以正常请求，前端请求错误的情况；生产环境一般无此问题
@@ -102,10 +105,7 @@ module.exports = {
 
     // mock server配置
     before(app) {
-      console.log('没进入 :>> ');
-
       if (NODE_ENV === 'development' && VUE_APP_MOCK === 'true') {
-        console.log('进入 :>> ');
         // parse app.body
         // https://expressjs.com/en/4x/api.html#req.body
         // create application/json parser

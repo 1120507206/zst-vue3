@@ -1,7 +1,7 @@
 const mockjs = require('mockjs');
 
 const { VUE_APP_APIHOST } = process.env;
-const ajaxHeadersTokenKey = 'x-token';
+const ajaxHeadersTokenKey = 'sessionId';
 const mock = {};
 
 mock[`GET ${VUE_APP_APIHOST}/user/info`] = (req, res) => {
