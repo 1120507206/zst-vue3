@@ -13,20 +13,20 @@
         :rules="formRules"
         label-width="120px"
       >
-        <ElFormItem label="账号" prop="name">
+        <ElFormItem label="账号" prop="account">
           <ElInput
             v-model="formModel.account"
             show-word-limit
             maxlength="30"
-            type="textarea"
+
             placeholder="请输入"
           />
         </ElFormItem>
-        <ElFormItem label="密码" prop="">
-          <ElInput v-model="formModel.name" placeholder="请输入6-12位数字、字母组合字符"  />
-        </ElFormItem>
-        <ElFormItem label="手机号" prop="contactNumber"  placeholder="请输入">
-          <ElInput v-model="formModel.contactNumber" />
+        <!-- <ElFormItem label="密码" prop="userPass">
+          <ElInput v-model="formModel.userPass" placeholder="请输入6-12位数字、字母组合字符"  />
+        </ElFormItem> -->
+        <ElFormItem label="手机号" prop="contactNum"  placeholder="请输入">
+          <ElInput v-model="formModel.contactNum" />
         </ElFormItem>
         <ElFormItem label="姓名" prop="name"  placeholder="请输入">
           <ElInput v-model="formModel.name" show-word-limit maxlength="30" />
@@ -35,21 +35,21 @@
         <ElFormItem label="邮箱" prop="email"  placeholder="请输入">
           <ElInput v-model="formModel.email" show-word-limit maxlength="30" />
         </ElFormItem>
-        <ElFormItem label="机构名称" prop="icon"  placeholder="请输入">
-          <ElInput v-model="formModel.icon" show-word-limit maxlength="30" />
+        <ElFormItem label="机构名称" prop="orgName"  placeholder="请输入">
+          <ElInput v-model="formModel.orgName" show-word-limit maxlength="30" />
         </ElFormItem>
         <ElFormItem label="跟进人" >
           <el-select
-            v-model="value"
+            v-model="formModel.contactsId"
             class="m-2"
             placeholder="Select"
             size="large"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in contactsList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             />
           </el-select>
         </ElFormItem>
@@ -80,6 +80,7 @@
     toRefs,
     ref,
     computed,
+    onMounted,
     watch,
     reactive,
     PropType,
@@ -98,7 +99,7 @@
   import { useVModel } from '@vueuse/core';
   import { phone, email } from '@/utils/validate';
   import type { UserFormData } from '../data.d';
-  import { get, save } from '../service';
+  import { get, save,getListPage ,searchUserOrg} from '../service';
 
   interface ComponentProps {
     visible: boolean,
@@ -107,14 +108,17 @@
     orgId: string,
   }
 
-  const initialFormData: UserFormData = {
+  const initialFormData = {
     id: '',
     account: '',
     name: '',
     gender: 'M',
-    contactNumber: '',
+    contactNum: '',
     email: '',
+    contactsId: '',
     icon: '',
+    userPass: '',
+    orgName: '',
   };
 
   export default defineComponent({
@@ -165,7 +169,7 @@
 
       //#region form
       const formRef = ref();
-      const formModel = reactive<UserFormData>(cloneDeep(initialFormData));
+      const formModel = reactive(cloneDeep(initialFormData));
       const formRules = {
         account: [
           {
@@ -181,7 +185,7 @@
             trigger: 'blur',
           },
         ],
-        contactNumber: [
+        contactNum: [
           {
           required: true,
             validator: phone,
@@ -197,20 +201,39 @@
         ],
       };
       //#endregion
-
+const contactsList = ref<any>([])
+  //查询条件
+  const getPageData = async () => {
+    const params = {
+      pageIndex:'1',
+      pageSize: '999',
+    };
+    const {
+      data: { success, message, obj },
+    } = await getListPage(params);
+   contactsList.value = obj.data
+   console.log('跟进人列表 :>> ', contactsList.value );
+  };
+  getPageData()
       //#region 获取数据
       const fetchUserData = async () => {
+      const params = {
+      id:userId.value
+      }
         try {
-          const { data: { success, obj, message } } = await get(userId.value);
+          const { data: { success, obj, message } } = await searchUserOrg(params);
           if (success) {
             Object.assign(formModel, {
               id: obj.id,
               account: obj.account,
               name: obj.userName,
               gender: obj.gender,
-              contactNumber: obj.contactNumber,
-              email: obj.emailbox,
+              contactNum: obj.contactNumber,
+              email: obj.email,
               icon: obj.iconPath,
+              orgName: obj.orgName,
+              contactsId: obj.contactsId,
+
             });
           } else {
             ElMessage.error(message);
@@ -247,10 +270,13 @@
                 account: formModel.account,
                 userName: formModel.name,
                 gender: formModel.gender,
-                contactNumber: formModel.contactNumber,
-                emailbox: formModel.email,
+                contactNum: formModel.contactNum,
+                email: formModel.email,
                 iconPath: formModel.icon,
-                effective: 'Y',
+                userPass: formModel.userPass,
+                contactsId: formModel.contactsId,
+                orgName: formModel.orgName,
+                // effective: 'Y',
                 orgId: orgId.value,
               });
               if (success) {
@@ -272,7 +298,7 @@
         title,
         onConfirm,
         onCancel,
-
+contactsList,
         //#region form
         formRef,
         formModel,

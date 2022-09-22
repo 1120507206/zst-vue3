@@ -13,7 +13,7 @@ export namespace ReqParams {
 
 export namespace ResResult {
   export type Login = ResponseData<{
-    emailbox?: string,
+    email?: string,
     curOrgName?: string,
     tk: string, // token
     curOrgId: string,
@@ -53,7 +53,7 @@ export namespace ResResult {
     account: string;
     contactNumber: string;
     curOrgName: string;
-    emailbox: string;
+    email: string;
     orgId: string;
     platformCode: string;
     userId: string;

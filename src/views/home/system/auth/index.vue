@@ -2,7 +2,7 @@
   <main class="main">
     <el-row :gutter="24">
       <el-col :span="4">
-        <Sidebar @submit="sideSubmit" @getId="getSidId" :treeData="treeData" />
+        <Sidebar @submit="sideSubmit" @getId="getSidId" :treeData="treeData" :account="account" />
       </el-col>
       <el-col :span="20">
         <div>授权：</div>
@@ -21,7 +21,7 @@
               >
             </el-button-group>
             <keep-alive style="margin-top: 20px;">
-              <component :id="userId" v-bind:is="currentTabComponent"></component>
+              <component :id="userId" ref="RefTestComponent" v-bind:is="currentTabComponent"></component>
             </keep-alive>
           </el-tab-pane>
         </el-tabs>
@@ -33,14 +33,22 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, computed } from "vue";
+  import { reactive, ref, computed ,watch} from "vue";
   import Sidebar from "./components/sidebar.vue";
   import Validperiod from "./components/validperiod.vue";
   import Editperiod from "./components/editperiod.vue";
   import {getByName,getUserByAccountOrOrgId } from "./service"
+import { useRoute } from 'vue-router'
+import { nextTick } from 'process'
+ const account = ref<any>('')
+ const route = useRoute()
+// 定义一个对象关联上子组件的 ref 值（注意：这里的属性名必须跟子组件定义的 ref 值一模一样，否者会关联失效）
+const RefTestComponent = ref(null)
+// 延迟使用，因为还没挂载
+nextTick(() => {
+  RefTestComponent.value.getPageData()
 
-
-
+})
   //左侧用户列表
   const treeData = ref([
 
@@ -56,6 +64,7 @@
    treeData.value = obj?obj:[];
 
   };
+
   //左侧的id
    let userId = ref<string>('')
   //左侧点击具体名称
@@ -64,7 +73,11 @@
     console.log('左侧点击的id :>> ', id);
 
   };
+  if ( route.query) {
+account.value = route.query.account
+getSidId(route.query.id)
 
+}
   //右侧为空时
   const isEmpty = ref<Boolean>(false);
 

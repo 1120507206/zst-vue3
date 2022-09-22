@@ -1,7 +1,7 @@
 <template>
   <main class="main">
     <ElRow :gutter="20">
-      <ElCol :span="4">
+      <!-- <ElCol :span="4">
         <ElScrollbar class="tree" height="450px">
           <ElTree
             ref="org"
@@ -14,8 +14,8 @@
             @node-click="onNodeClick"
           />
         </ElScrollbar>
-      </ElCol>
-      <ElCol :span="20">
+      </ElCol> -->
+      <ElCol :span="24">
         <ElRow class="main__header" :gutter="20">
           <ElCol :span="2">
             <ElButton type="primary" @click="onAdd">
@@ -32,10 +32,10 @@
           <ElCol :span="9">
             <ElForm ref="formRef" inline :model="formModel" label-width="80px">
               <ElFormItem prop="orgId">
-                <ElInput v-model="formModel.orgId" placeholder="输入机构名称" />
+                <ElInput v-model="formModel.orgName" placeholder="输入机构名称" />
               </ElFormItem>
               <ElFormItem prop="name">
-                <ElInput v-model="formModel.name" placeholder="输入账号" />
+                <ElInput v-model="formModel.account" placeholder="输入账号" />
               </ElFormItem>
 
             </ElForm>
@@ -48,7 +48,7 @@
         </ElRow>
         <ElTable border :data="tableData" class="main__body">
           <ElTableColumn label="账号" align="center" prop="account" />
-          <ElTableColumn label="联系人" align="center" prop="name" />
+          <ElTableColumn label="联系人" align="center" prop="userName" />
           <!-- <ElTableColumn
             label="性别"
             align="center"
@@ -60,9 +60,9 @@
           </ElTableColumn> -->
           <ElTableColumn label="手机号" align="center" prop="contactNumber" />
           <ElTableColumn label="邮箱" align="center" prop="email" />
-          <ElTableColumn label="机构名称" align="center" prop="email" />
-          <ElTableColumn label="跟进人" align="center" prop="email" />
-          <ElTableColumn label="更新时间" align="center" prop="email" />
+          <ElTableColumn label="机构名称" align="center" prop="orgName" />
+          <ElTableColumn label="跟进人" align="center" prop="contactName" />
+          <ElTableColumn label="更新时间" align="center" prop="updateTime" />
           <!-- <ElTableColumn
             label="图标路径"
             align="center"
@@ -77,18 +77,24 @@
               {{ row.isDelete === 'Y' ? '是' : '否' }}
             </template>
           </ElTableColumn> -->
-          <ElTableColumn label="操作" align="center" width="150px">
+          <ElTableColumn label="操作" align="center" width="250px">
             <template #default="{ row }">
               <ElSpace>
-                <ElButton type="text" @click="onEdit(row)">
+                <ElButton type="primary" @click="onEdit(row)">
                   编辑
+                </ElButton>
+                <ElButton type="primary" @click="goAuth(row)">
+                  授权
                 </ElButton>
                 <!-- <ElButton type="text" @click="onDelete(row)">
                   删除
                 </ElButton> -->
-                <ElButton type="text" @click="onShowIdentity(row)">
-                  查看身份
+                <ElButton type="" @click="onShowSms(row)">
+                  短信通知人
                 </ElButton>
+                <!-- <ElButton type="primary" @click="onShowIdentity(row)">
+                  查看身份
+                </ElButton> -->
               </ElSpace>
             </template>
           </ElTableColumn>
@@ -115,6 +121,7 @@
     />
 
     <Identity v-model:visible="isShowIdentity" :user-id="selectedID" />
+    <Sms   v-model:visible="isShowSms" :userId="smsId"  />
   </main>
 </template>
 
@@ -124,7 +131,9 @@
     ref,
     reactive,
     onMounted,
+
   } from 'vue';
+  import { useRouter } from "vue-router";
   import {
     ElRow,
     ElCol,
@@ -145,6 +154,7 @@
   } from 'element-plus';
   import AddUser from './components/add.vue';
   import Identity from './components/identity.vue';
+  import Sms from './components/sms.vue';
   import type { ResResult } from '@/views/home/system/org/data.d';
   import { getOrgTree } from '@/views/home/system/org/service';
   import {
@@ -154,8 +164,9 @@
   } from './service';
 
   interface SearchForm {
-    name: string,
-    orgId: string,
+    account: string,
+    orgId?: string,
+    orgName: string,
     // gender: 'M' | 'F' | '',
   }
 
@@ -190,19 +201,22 @@
       ElSpace,
       AddUser,
       Identity,
+      Sms,
     },
 
     setup() {
       //#region 添加/编辑弹窗
       const isShowDialog = ref(false);
       const type = ref<'add' | 'edit'>('add');
+      const router =useRouter()
       //#endregion
 
       //#region 页头操作
       const formRef = ref();
       const formModel = reactive<SearchForm>({
-        name: '',
-        orgId: '',
+        account: '',
+        orgName: '',
+        // orgId: '',
         // gender: '',
       });
       //#endregion
@@ -217,7 +231,7 @@
       });
 
       //#region 表格
-      const tableData = ref<TableRow[]>();
+      const tableData = ref();
       const pagination = reactive({
         total: 0,
         pageIndex: 1,
@@ -228,21 +242,16 @@
         try {
           const { data: { success, message, obj } } = await searchUserOrgPage({
             orgId: selectedOrg.value ? selectedOrg.value.id : '',
-            searchKey: formModel.name,
+            orgName:formModel.orgName,
+            // searchKey: formModel.account,
+            account: formModel.account,
             pageIndex: pagination.pageIndex,
             pageSize: pagination.pageSize,
           });
           if (success) {
-            tableData.value = obj.data ? obj.data.map((item) => ({
-              id: item.id,
-              account: item.account,
-              name: item.userName,
-              gender: item.gender,
-              mobile: item.contactNumber,
-              email: item.emailbox,
-              icon: item.iconPath,
-              isDelete: item.isDelete,
-            })) : [];
+            tableData.value = obj.data ? obj.data.map((item) => {
+            return item
+            }) : [];
             pagination.total = obj.total || 0;
             pagination.pageIndex = obj.pageIndex || 1;
           } else {
@@ -304,7 +313,16 @@
         isShowDialog.value = true;
       };
       //#endregion
-
+const goAuth = (row: TableRow)=>{
+router.push({
+path: '/system/auth',
+query:{
+account: row.account,
+id:row.id,
+},
+})
+console.log('row :>> ', row);
+}
       const onEdit = (row: TableRow) => {
         selectedID.value = row.id;
         type.value = 'edit';
@@ -338,6 +356,12 @@
         isShowIdentity.value = true;
       };
 
+      const isShowSms = ref(false);
+  const smsId = ref('')
+    const onShowSms = (row: TableRow) => {
+    smsId.value = row.id;
+    isShowSms.value = true;
+    }
       const onUserSubmitted = () => {
         fetchTableData();
       };
@@ -360,6 +384,7 @@
         onSearch,
         onReset,
         onAdd,
+        goAuth,
         //#endregion
 
         //#region 树
@@ -390,6 +415,10 @@
         //#region 查看身份
         isShowIdentity,
         onShowIdentity,
+  //#region 短信弹框
+  smsId,
+  onShowSms,
+        isShowSms,
         //#endregion
       };
     },

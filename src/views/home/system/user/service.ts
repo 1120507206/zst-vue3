@@ -3,6 +3,46 @@ import apiBaseUrl from '@/config/apiBaseUrl';
 import request from '@/utils/request';
 import type { ReqParams, ResResult } from './data.d';
 
+/* 查询通讯录分页数据 */
+export const getListPage = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/contacts_info/listPage',
+  method: 'POST',
+  data: params,
+});
+/* 指定用户获取联系人 */
+export const getContact = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user/getContact',
+  method: 'GET',
+  params,
+});
+/* 设置短信通知人保存*/
+export const saveContact = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  url: '/user/saveContact',
+  method: 'POST',
+  data: params,
+});
+/* 获取单个用户数据 新*/
+export const searchUserOrg = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/user/searchUserOrg',
+  method: 'POST',
+  data: params,
+});
+
 /* 获取单个用户数据 */
 export const get = (id: string): AxiosPromise<ResResult.Get> => request({
   baseURL: apiBaseUrl.get('sys'),
@@ -14,7 +54,7 @@ export const get = (id: string): AxiosPromise<ResResult.Get> => request({
 });
 
 /* 保存修改 */
-export const save = (params: ReqParams.Save): AxiosPromise<ResResult.Save> => request({
+export const save = (params:any): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   url: '/user/save',
   method: 'POST',
@@ -53,8 +93,8 @@ export const resetPassword = (id: string): AxiosPromise<ResResult.ResetPassword>
 
 /* 查询数据分页1 */
 export const searchUserOrgPage = (
-  params: ReqParams.SearchUserPage,
-): AxiosPromise<ResResult.SearchUserPage> => request({
+  params:any,
+): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   url: '/user/searchUserOrgPage',
   method: 'POST',

@@ -16,7 +16,7 @@ export namespace ReqParams {
 
 export namespace ResResult {
   export type Login = ResponseData<{
-    emailbox?: string,
+    email?: string,
     curOrgId: string,
     curOrgName: string,
     tk: string, // token

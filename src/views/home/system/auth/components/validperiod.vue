@@ -85,7 +85,7 @@
 
 <script lang="ts" setup>
   import { ElMessage } from "element-plus";
-  import { reactive, ref, watch } from "vue";
+  import { reactive, ref, watch,onMounted } from "vue";
   import { useHandleData } from "@/hooks/useHandleData";
   import {
     getSearchLabelPage,
@@ -228,7 +228,7 @@
     pageIndex: 1,
     pageSize: 10,
     labelDictType: "test",
-    userId: "",
+    userId: props.id,
     effective: false,
   });
   //查询条件
@@ -262,6 +262,10 @@
       console.log(" 监听id变化", val);
     }
   );
+  onMounted(() => {
+      getPageData();
+
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -91,7 +91,7 @@ const StoreModel: ModuleType = {
             userId: obj.userId,
             account: obj.account,
             name: obj.userName,
-            email: obj.emailbox,
+            email: obj.email,
             org: {
               id: obj.curOrgId,
               name: obj.curOrgName,

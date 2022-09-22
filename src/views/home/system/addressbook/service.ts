@@ -13,4 +13,36 @@ export const getUserIdentity = (
   method: 'GET',
    params
 });
+/* 查询通讯录分页数据 */
+export const getListPage = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/contacts_info/listPage',
+  method: 'POST',
+  data: params,
+});
+/*保存通讯录 */
+export const saveOrUpdate = (
+  params:any
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/contacts_info/saveOrUpdate',
+  method: 'POST',
+  data: params,
+});
+/* 删除通讯录 */
 
+export const deleteUscontactsInfo = (
+  id:string
+): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  // baseURL: mockUrl,
+  url: '/contacts_info/delete',
+  method: 'DELETE',
+   params: {
+    id,
+  },
+});

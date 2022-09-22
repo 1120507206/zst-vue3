@@ -162,7 +162,15 @@
     const {
       data: { success, message, obj },
     } = await getValidDateList(params);
+
     if (obj.length == 0) {
+    validityperiodList.value = []
+     validityperiod.value = ''
+       formData.labelValue1 = 0;
+      formData.labelValue2 = 0;
+      formData.labelValue3 = 0;
+      formData.labelValue4 = 0;
+      formData.labelValue5 = 0;
       return;
     }
     validityperiodList.value = obj.map((item: any) => {
@@ -209,6 +217,9 @@
     formData.labelValue3 = selsetObj.labelValue3;
     formData.labelValue4 = selsetObj.labelValue4;
     formData.labelValue5 = selsetObj.labelValue5;
+    formData.validDateFrom = selsetObj.validDateFrom;
+    formData.validDateEnd = selsetObj.validDateEnd;
+
     if (formData.labelValue2 === -1 && formData.labelValue3 == -1) {
       radioProject.value = true;
       formData.labelValue2 = null;
@@ -227,6 +238,8 @@
   interface FormData {
     id?: string;
     userId: any;
+    validDateFrom:string;
+    validDateEnd:string;
     labelValue1: any; //并发数量
     labelValue2: any; //额定项目数
     labelValue3: any; //超额项目数
@@ -237,6 +250,8 @@
   const formData: FormData = reactive({
     id: "",
     userId: props.id,
+        validDateFrom:'',
+    validDateEnd:'',
     labelValue1: 0, //并发数量
     labelValue2: 0, //额定项目数
     labelValue3: 0, //超额项目数

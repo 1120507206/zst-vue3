@@ -13,7 +13,7 @@ export const getUserIdentity = (
 ): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   // baseURL: mockUrl,
-  url: '/user_identity/get',
+  url: '/user_label/get',
   method: 'GET',
    params
 });
@@ -23,7 +23,7 @@ export const getValidDateList = (
 ): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   // baseURL: mockUrl,
-  url: '/user_identity/validDateList',
+  url: '/user_label/validDateList',
   method: 'GET',
    params
 });
@@ -33,7 +33,7 @@ export const saveUserIdentity = (
 ): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   // baseURL: mockUrl,
-  url: '/user_identity/save',
+  url: '/user_label/save',
   method: 'POST',
   data: params,
 });
@@ -44,7 +44,7 @@ export const deleteUserIdentity = (
 ): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   // baseURL: mockUrl,
-  url: 'user_identity/delete',
+  url: 'user_label/delete',
   method: 'DELETE',
    params: {
     id,
@@ -56,7 +56,7 @@ export const getSearchLabelPage = (
 ): AxiosPromise => request({
   baseURL: apiBaseUrl.get('sys'),
   // baseURL: mockUrl,
-  url: '/user_identity/searchLabelPage',
+  url: '/user_label/searchLabelPage',
   method: 'POST',
   data: params,
 });

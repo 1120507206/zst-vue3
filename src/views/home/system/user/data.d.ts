@@ -6,7 +6,7 @@ export namespace ReqParams {
     account: string,
     contactNumber: string,
     effective: 'Y' | 'N',
-    emailbox: string,
+    email: string,
     gender: 'M' | 'F', // male or female
     iconPath: string,
     orgId: string,
@@ -26,6 +26,7 @@ export namespace ReqParams {
   export interface SearchUserPage extends PaginationParams {
     orgId: string,
     searchKey: string,
+
   }
 
   export interface UpdatePasswordByAccount {
@@ -38,9 +39,9 @@ export namespace ResResult {
   interface User {
     id: string,
     account: string,
-    contactNumber: string,
+    contactNum: string,
     effective: 'Y' | 'N',
-    emailbox: string,
+    email: string,
     gender: 'M' | 'F',
     iconPath: string,
     isDelete: 'Y' | 'N',

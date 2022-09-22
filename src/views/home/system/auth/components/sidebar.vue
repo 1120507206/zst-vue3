@@ -22,9 +22,9 @@
     <el-scrollbar class="tree" height="400px">
 
       <el-menu
-        default-active="-1"
+        :default-active="defaultActive"
       >
-        <el-menu-item  @click="itemclick(item)" :index="index" v-for=" (item,index) in treeData">
+        <el-menu-item  @click="itemclick(item)" :index="index+ ''" v-for=" (item,index) in treeData">
           <span>{{item.account}}</span>
         </el-menu-item>
 
@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref } from "vue";
+  import { reactive, ref,onMounted,watch } from "vue";
   interface SearchForm {
   account: string,
   orgId?: number,
@@ -48,17 +48,24 @@
   //表格数据
   const props = defineProps({
      treeData: { type: Array,  default: [] },
+     account: { type: String,  default: '' },
+
 })
   //表单数据
   const formData = reactive({
-    account: "",
+    account: props.account,
     companyName: "",
   });
 
-//点击侧边栏时间
+//点击侧边栏数据
 const itemclick = (value:any)=>{
 const id = value.id
    emit("getId", id);
+
+}
+const defaultActive = ref('-1')
+if (props.account) {
+defaultActive.value = '0'
 
 }
 
@@ -66,6 +73,11 @@ const id = value.id
   const query = () => {
     emit("submit", formData);
   };
+
+  onMounted(() => {
+    query()
+
+  })
 </script>
 
 <style lang="scss" scoped>
