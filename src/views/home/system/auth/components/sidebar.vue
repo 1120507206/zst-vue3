@@ -23,6 +23,7 @@
 
       <el-menu
         :default-active="defaultActive"
+        v-if="treeData"
       >
         <el-menu-item  @click="itemclick(item)" :index="index+ ''" v-for=" (item,index) in treeData">
           <span>{{item.account}}</span>
@@ -66,12 +67,13 @@ const id = value.id
 const defaultActive = ref('-1')
 if (props.account) {
 defaultActive.value = '0'
-
 }
 
   //查询
   const query = () => {
     emit("submit", formData);
+// defaultActive.value = '-1'
+
   };
 
   onMounted(() => {

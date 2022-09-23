@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="4">
         <el-button type="primary" @click="add">添加</el-button>
-        <el-button type="primary" @click="query">查询</el-button>
+        <el-button type="primary" @click="search">查询</el-button>
       </el-col>
       <el-col :span="4"> </el-col>
     </el-row>
@@ -34,21 +34,21 @@
       </el-col>
     </el-row>
     <el-row justify="end" style="margin-top: 20px;">
-      <el-col :span="24" >
+      <el-col :span="24">
         <el-pagination
-          background
-          style="justify-content: end;"
+          :currentPage="pageable.pageIndex"
+          :page-size="pageable.pageSize"
           :hide-on-single-page="isShowPage"
+          background
           layout="prev, pager, next, jumper"
-          :current-page="pagination.current"
-          :page-size="pagination.pageSize"
-          :total="pagination.total"
-          @current-change="pagination.onChange"
-        />
+          :total="pageable.total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        ></el-pagination>
       </el-col>
     </el-row>
 
-    <el-dialog v-model="addVisible" width="25%" :title="dialogTitle +'人员'">
+    <el-dialog v-model="addVisible" width="25%" :title="dialogTitle + '人员'">
       <el-form
         :model="addModelData"
         ref="formRef"
@@ -85,10 +85,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, onMounted } from "vue";
+  import { reactive, ref } from "vue";
   import { phone, email } from "@/utils/validate";
   import { ElMessage } from "element-plus";
   import { useHandleData } from "@/hooks/useHandleData";
+  import { useTable } from "@/hooks/useTable";
 
   import { getListPage, saveOrUpdate, deleteUscontactsInfo } from "./service";
   //新增表单
@@ -99,7 +100,7 @@
     email: "",
   });
   const formRef = ref();
-const dialogTitle=ref("新增")
+  const dialogTitle = ref("新增");
   //表单检验
   const formRules = {
     name: [
@@ -127,21 +128,19 @@ const dialogTitle=ref("新增")
   let isEdit = false;
   //编辑相关
   const handleEdit = (index: any, row: any) => {
+  console.log('row :>> ', row);
     isEdit = true;
-    dialogTitle.value = '编辑'
+    dialogTitle.value = "编辑";
     addVisible.value = true;
-    addModelData.id = row.id;
-    addModelData.name = row.name;
-    addModelData.phone = row.phone;
-    addModelData.email = row.email;
-    console.log("row", row);
+    Object.assign(addModelData,{...row})
+
   };
   //新增相关
   const addVisible = ref(false);
   const add = () => {
     isEdit = false;
-    dialogTitle.value = '新增'
-
+    dialogTitle.value = "新增";
+    addModelData.id = "";
     addVisible.value = true;
     formRef.value.resetFields();
   };
@@ -171,7 +170,8 @@ const dialogTitle=ref("新增")
     } else {
       ElMessage.error(message);
     }
-    getPageData();
+    search();
+    // getPageData();
   };
 
   //删除按钮
@@ -180,55 +180,25 @@ const dialogTitle=ref("新增")
       id: row.id,
     };
     await useHandleData(deleteUscontactsInfo, params.id, `删除该联系人`);
-    getPageData();
+    search();
+    // getPageData();
   };
 
-    //是否屏蔽分页控件
-  const isShowPage = ref(true);
-  const pagination = reactive({
-    current: 1, //
-    pageSize: 10,
-    total: 20, //
-    onChange: (page: any) => {
-      pagination.current = page;
-      searchFrom.pageIndex = page;
-      getPageData();
-    },
-  });
-  //表格数据
-  const tableData = ref([]);
-  //搜索条件
-  const searchFrom = reactive({
-    pageIndex: 1,
-    pageSize: 10,
-    labelDictType: "test",
-    userId: "",
-    effective: false,
-  });
-  //查询
-  const query = () => {
-    getPageData();
-  };
-  //查询条件
-  const getPageData = async () => {
-    const params = {
-      pageIndex: searchFrom.pageIndex,
-      pageSize: searchFrom.pageSize,
-    };
-    const {
-      data: { success, message, obj },
-    } = await getListPage(params);
-    if (obj.total>10) {
-      isShowPage.value = false
-    }else{
-     isShowPage.value =true
-    }
-    pagination.total = obj.total || 0;
-    tableData.value = obj.data ? obj.data : [];
-  };
-  onMounted(() => {
-    getPageData();
-  });
+
+//表格hooks
+  const {
+    tableData,
+    pageable,
+    searchParam,
+    searchInitParam,
+    isShowPage,
+    getTableList,
+    search,
+    reset,
+    handleSizeChange,
+    handleCurrentChange,
+  } = useTable(getListPage);
+
 </script>
 
 <style lang="scss" scoped></style>

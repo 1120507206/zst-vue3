@@ -62,6 +62,8 @@ export default defineComponent({
         localforage.getItem('menuData'),
         localforage.getItem('authList'),
       ]);
+      console.log('savedMenuData :>> ', savedMenuData);
+      console.log('savedAuthList :>> ', savedAuthList);
       commit('user/setUserInfo', savedUserInfo);
       commit('user/setMenuData', savedMenuData);
       commit('user/setAuthList', savedAuthList);

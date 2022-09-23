@@ -3,6 +3,12 @@ import apiBaseUrl from '@/config/apiBaseUrl';
 import request from '@/utils/request';
 import { ReqParams, ResResult } from './data.d';
 
+/* 新菜单树 */
+export const getDrmSysResourceInfoTree = (): AxiosPromise => request({
+  baseURL: apiBaseUrl.get('sys'),
+  url: '/resource/getDrmSysResourceInfoTree',
+  method: 'POST',
+});
 /* 菜单树 */
 export const getMenuTree = (): AxiosPromise<ResResult.GetMenuTree> => request({
   baseURL: apiBaseUrl.get('sys'),

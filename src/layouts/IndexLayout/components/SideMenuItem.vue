@@ -119,12 +119,13 @@ export default defineComponent({
   },
 
   setup(props: ComponentProps): SideMenuItemSetupData {
-    const { routeItem } = toRefs(props);
-
+    const { routeItem,belongTopMenu } = toRefs(props);
+  // console.log('belongTopMenu', belongTopMenu)
     const topMenuPath = computed<string>(() => getRouteBelongTopMenu(
       routeItem.value as RoutesDataItem,
     ));
-
+    // console.log('routeItem :>> ', routeItem);
+// console.log('topMenuPath', topMenuPath)
     return {
       item: routeItem,
       topMenuPath,

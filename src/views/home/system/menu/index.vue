@@ -143,6 +143,7 @@ import {
   getMenuTree,
   searchMenuPage,
   deleteMenu,
+  getDrmSysResourceInfoTree
 } from './service';
 
 interface TableRow {

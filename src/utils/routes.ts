@@ -247,6 +247,7 @@ export const vueRoutes = (
     children,
     ...other
   } = item;
+  // console.log('3333333333rawAuthList :>> ', rawAuthList);
   const authItem = find(rawAuthList, (rawAuthItem) => {
     // 目前计划带/link的地址均当成外链处理
     if (item.path.includes('/link')) {

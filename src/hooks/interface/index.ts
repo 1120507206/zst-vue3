@@ -1,12 +1,13 @@
 export namespace Table {
 	export interface Pageable {
-		pageNum: number;
+		pageIndex: number;
 		pageSize: number;
 		total: number;
 	}
 	export interface TableStateProps {
 		tableData: any[];
 		pageable: Pageable;
+		isShowPage:boolean;
 		searchParam: {
 			[key: string]: any;
 		};

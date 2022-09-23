@@ -113,8 +113,10 @@ export default defineComponent({
     const route = useRoute();
 
     // 所有菜单路由
+
+    // const menuData: RoutesDataItem[] = vueRoutes(testArr, IndexLayoutRoutes);
     const menuData: RoutesDataItem[] = vueRoutes(store.state.user.authList, IndexLayoutRoutes);
-    console.log('menuData', store.state.user.authList, IndexLayoutRoutes, menuData);
+    console.log('menuData111', store.state.user.authList, IndexLayoutRoutes, menuData);
 
     // 当前路由 item
     const routeItem = computed<RoutesDataItem>(() => getRouteItem(route.path, menuData));
@@ -126,7 +128,8 @@ export default defineComponent({
     // ));
     // 当前系统的菜单是在后端返回的，与本系统整合的话，暂时最靠谱的办法是比对后端返回的菜单，与前端菜单整合
     const permissionMenuData = computed<RoutesDataItem[]>(() => menuData);
-
+    console.log('权限菜单 :>> ', permissionMenuData);
+    console.log('权限菜单menuData :>> ', menuData);
     // 当前路由的顶部菜单path
     const belongTopMenu = computed<string>(() => getRouteBelongTopMenu(routeItem.value));
 

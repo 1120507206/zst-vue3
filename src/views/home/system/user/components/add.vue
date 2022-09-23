@@ -212,7 +212,6 @@ const contactsList = ref<any>([])
       data: { success, message, obj },
     } = await getListPage(params);
    contactsList.value = obj.data
-   console.log('跟进人列表 :>> ', contactsList.value );
   };
   getPageData()
       //#region 获取数据

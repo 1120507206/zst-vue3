@@ -98,16 +98,19 @@ export default defineComponent({
           );
         }
       }
+      console.log('MenuItems', MenuItems)
       return MenuItems;
     });
-
+  console.log('newMenuData :>> ', newMenuData);
     const onMenuSelect = (path: string) => {
       // 从权限数据里面寻找菜单数据有没有当前需要打开的路径，有就打开新选项卡
+      // console.log(' state.user.authList :>> ',  state.user.authList);
       if (state.global.hasTabNav) {
         const currentRouteMenu = find(
           state.user.authList,
           (item) => item.menuUrl === path,
         );
+        console.log('currentRouteMenu', currentRouteMenu)
         if (currentRouteMenu) {
           useAddTabNav(store, router, {
             title: currentRouteMenu.menuName,

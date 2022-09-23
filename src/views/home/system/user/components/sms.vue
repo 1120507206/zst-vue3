@@ -17,7 +17,7 @@
           :value="item.id"
         />
       </el-select>
-      <el-button type="primary">清空</el-button>
+      <el-button type="primary" @click="clearContactsId">清空</el-button>
     </div>
     <div>
       <el-button
@@ -35,6 +35,7 @@
   import { useVModel } from "@vueuse/core";
   import { getListPage, saveContact,getContact } from "../service";
   import { ElMessage } from "element-plus";
+import { clear } from "console";
   // const isShowModal =ref(false)
   const props = defineProps<{
     visible: boolean;
@@ -54,7 +55,7 @@
       data: { success, message, obj },
     } = await getListPage(params);
     contactsList.value = obj.data;
-    console.log(' contactsList.value :>> ',  contactsList.value);
+    // console.log(' contactsList.value :>> ',  contactsList.value);
   };
   getPageData();
 //指定用户获取联系人
@@ -69,7 +70,7 @@
       } = await getContact(params);
       if (success) {
      contactsId.value =  obj.contactIds
-      console.log('指定用户获取联系人obj :>> ', obj);
+      // console.log('指定用户获取联系人obj :>> ', obj);
       } else {
         ElMessage.error(message);
       }
@@ -81,6 +82,10 @@
    watch(() => props.userId, (cur) => {
     getContactList()
     });
+    //清除选择的id
+    const clearContactsId = ()=>{
+ contactsId.value = []
+    }
 //保存
   const save = async () => {
     const params = {
@@ -109,6 +114,7 @@ isShowModal.value = false;
 
 <style lang="scss" scoped>
   .sms-box {
+  margin-top: 10px;
     display: flex;
     // justify-content: center;
     align-items: center;
